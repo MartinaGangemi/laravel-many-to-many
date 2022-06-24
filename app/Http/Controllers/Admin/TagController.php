@@ -65,7 +65,8 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        //
+        $tags = Tag::all();
+        return view('admin.tags.edit', compact('tag'));
     }
 
     /**
@@ -75,9 +76,13 @@ class TagController extends Controller
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function update(TagRequest $request, Tag $tag)
     {
-        //
+        $validated_data = $request->validated();
+        $slug = Tag::generateSlug($request->name);
+        $validated_data['slug'] = $slug;
+        $tag->update($validated_data);
+       return redirect()->route('admin.tags.index');
     }
 
     /**
