@@ -28,6 +28,8 @@ class PostRequest extends FormRequest
             'category_id'=> 'nullable|exists:categories,id',
             'img' => 'required|url',
             'content' => 'required',
+            'tags'=>'nullable|exists:tags,id'
+            
         ];
     }
 }

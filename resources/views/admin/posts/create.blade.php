@@ -30,7 +30,9 @@
         <textarea name="content" id="content"  class="@error('content') is-invalid @enderror form-control"  rows="4"  >
         {{ old('content') }}
         </textarea>
-        
+        @error('content')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
     <!-- Img -->
     <div class="form-group">
@@ -55,17 +57,18 @@
     <!-- Tag -->
     <div class="form-group">
       <label for="tags" class="form-label ">Tags</label>
-      <select multiple class=" @error('tas') is-invalid @enderror form-select " name="tags[]" id="tags">
+      <select multiple class=" @error('tags') is-invalid @enderror form-select " name="tags[]" id="tags">
         
         <option value = "">Seleziona una categoria</option>
         @forelse($tags as $tag)
         <option value="{{ $tag->id}}" >{{$tag->name}}</option>
-        
-        
         @empty
         <option value = "">No Tags</option>
         @endforelse
       </select>
+      @error('tags')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
     
     

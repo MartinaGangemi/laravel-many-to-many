@@ -82,9 +82,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {   
-
+        $tags = Tag::all();
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post','categories'));
+        return view('admin.posts.edit', compact('post','categories', 'tags'));
     }
 
     /**
@@ -99,9 +99,9 @@ class PostController extends Controller
         $validated_data = $request->validated();
         //dd($validated_data);
         $slug = Post::generateSlug($request->title);
-        
         $validated_data['slug'] = $slug;
         $post->update($validated_data);
+        $post->tags()->sync($request->tags);
         return redirect()->route('admin.posts.index');
     }
 

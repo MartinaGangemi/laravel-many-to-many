@@ -51,6 +51,28 @@
         
       </select>
     </div>
+    <div class="form-group">
+      <label for="tags" class="form-label ">Tags</label>
+      <select multiple class=" @error('tags') is-invalid @enderror form-select " name="tags[]" id="tags">
+        
+        <option value = "">Seleziona una categoria</option>
+        @forelse ($tags as $tag)
+
+        @if($errors->any())
+        <option value="{{$tag->id}}" {{  in_array($tag->id, old('tags')) ? 'selected' : ''}} >{{$tag->name}}</option>
+        @else
+        <option value="{{$tag->id}}" {{  $post->tags->contains($tag) ? 'selected' : ''}} >{{$tag->name}}</option>
+        @endif
+        
+        @empty
+        <option value = "">No Tags</option>
+        @endforelse
+      </select>
+      @error('tags')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    
     
     
     <button type="submit" class="btn btn-danger text-light mt-4">Edit Post</button>
