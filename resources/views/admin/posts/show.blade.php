@@ -9,6 +9,16 @@
         Category: {{$post->category ?  $post->category-> name : 'nessuna categoria'}}
     </div>
     <p>{{$post->content}}</p>
+    <p>
+        @if (count($post->tags) > 0)
+            <strong>Tag:</strong>
+            @foreach ($post->tags as $tag)
+            <span>#{{$tag->name}},</span>
+            @endforeach
+        @else
+        <span>Nessun tag</span>
+        @endif
+    </p>
 </div>
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
@@ -30,8 +31,9 @@ class PostController extends Controller
     public function create()
     {   
         $categories = Category::all();
+        $tags = Tag::all();
         //dd($categories);
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories','tags'));
 
     }
 
@@ -53,9 +55,10 @@ class PostController extends Controller
         // $post->content = $request->content;
         // $post->img = $request->img;
         
-        //dd($request->all());
+        // dd($request->all());
        
-        Post::create($validated_data);
+        $new_post = Post::create($validated_data);
+        $new_post->tags()->attach($request->tags);
         return redirect()->route('admin.posts.index')->with('message', 'Post creato con successo');
     }
 
