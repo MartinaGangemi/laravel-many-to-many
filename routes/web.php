@@ -1,7 +1,9 @@
 <?php
 
+use App\Mail\PostUpdatedAdminMessage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,8 @@ Route::middleware('auth')->prefix('admin')->namespace('Admin')->name('admin.')->
         'tags' => 'tag:slug'
     ])->except(['show']);
 });
+
+
 
 Route::get("{any?}", function (){
     return view("guest.home");

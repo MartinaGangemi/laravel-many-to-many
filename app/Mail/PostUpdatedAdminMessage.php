@@ -1,16 +1,18 @@
 <?php
 
 namespace App\Mail;
+
 use App\Models\Post;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewPostCreated extends Mailable
+class PostUpdatedAdminMessage extends Mailable
 {
     use Queueable, SerializesModels;
-    public $post;
+
+    protected $post;
     /**
      * Create a new message instance.
      *
@@ -18,7 +20,7 @@ class NewPostCreated extends Mailable
      */
     public function __construct(Post $post)
     {
-        $this->post=$post;
+        $this->post = $post;
     }
 
     /**
@@ -29,8 +31,10 @@ class NewPostCreated extends Mailable
     public function build()
     {
         return $this
-        ->from('noreply@example.com')
-        ->subject('Un nuovo post è stato creato')
-        ->view('mail.posts.created');
+        ->markdown('mail.markdown.admin-postupdated')
+        ->with([
+            'postSlug'=>$this->post->slug,
+            'postUrl'=> env('APP_URL').'/posts/'.$this->post->slug,
+        ]);
     }
 }

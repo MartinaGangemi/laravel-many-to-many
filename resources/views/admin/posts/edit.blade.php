@@ -59,7 +59,8 @@
         @forelse ($tags as $tag)
 
         @if($errors->any())
-        <option value="{{$tag->id}}" {{  in_array($tag->id, old('tags')) ? 'selected' : ''}} >{{$tag->name}}</option>
+        (!empty($variables['attributes']['class']) && in_array('glb-table', $variables['attributes']['class'], TRUE))
+        <option value="{{$tag->id}}" {{  in_array($tag->id, old('tag', [])) ? 'selected' : ''}} >{{$tag->name}}</option>
         @else
         <option value="{{$tag->id}}" {{  $post->tags->contains($tag) ? 'selected' : ''}} >{{$tag->name}}</option>
         @endif

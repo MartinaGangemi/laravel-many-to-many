@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\NewPostCreated;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\PostUpdatedAdminMessage;
+
 
 
 class PostController extends Controller
@@ -57,7 +59,7 @@ class PostController extends Controller
 
         if ($request->hasFile('img')){
             $request->validate([
-                'img'=> 'required|image|max:300'
+                'img'=> 'nullable|image|max:300'
             ]);
 
            $path = Storage::put('posts_images', $request->img);
@@ -104,7 +106,7 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(PostRequest $request, post $post)
+    public function update(PostRequest $request, Post $post)
     {
         $validated_data = $request->validated();
         //dd($validated_data);
@@ -113,7 +115,7 @@ class PostController extends Controller
 
         if ($request->hasFile('img')){
             $request->validate([
-                'img'=> 'required|image|max:300'
+                'img'=> 'nullable|image|max:300'
             ]);
 
             Storage::delete($post->img);
@@ -124,6 +126,11 @@ class PostController extends Controller
 
         $post->update($validated_data);
         $post->tags()->sync($request->tags);
+
+        
+        Mail::to('admin@boolpress.it')->send(new PostUpdatedAdminMessage($post));
+        
+
         return redirect()->route('admin.posts.index');
 
         
