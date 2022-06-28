@@ -7,6 +7,9 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
+use App\Mail\NewPostCreated;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 
 class PostController extends Controller
@@ -50,15 +53,22 @@ class PostController extends Controller
         $validated_data = $request->validated();
         $slug = Post::generateSlug($request->title);
         $validated_data['slug'] = $slug;
-        // $post = new Post();
-        // $post->title = $request->title;
-        // $post->content = $request->content;
-        // $post->img = $request->img;
         
-        // dd($request->all());
-       
+
+        if ($request->hasFile('img')){
+            $request->validate([
+                'img'=> 'required|image|max:300'
+            ]);
+
+           $path = Storage::put('posts_images', $request->img);
+           $validated_data['img'] = $path;
+        }
+
         $new_post = Post::create($validated_data);
         $new_post->tags()->attach($request->tags);
+
+        
+        Mail::to($request->user())->send(new NewPostCreated($new_post));
         return redirect()->route('admin.posts.index')->with('message', 'Post creato con successo');
     }
 
@@ -100,9 +110,23 @@ class PostController extends Controller
         //dd($validated_data);
         $slug = Post::generateSlug($request->title);
         $validated_data['slug'] = $slug;
+
+        if ($request->hasFile('img')){
+            $request->validate([
+                'img'=> 'required|image|max:300'
+            ]);
+
+            Storage::delete($post->img);
+
+           $path = Storage::put('posts_images', $request->img);
+           $validated_data['img'] = $path;
+        }
+
         $post->update($validated_data);
         $post->tags()->sync($request->tags);
         return redirect()->route('admin.posts.index');
+
+        
     }
 
     /**
@@ -112,7 +136,8 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post)
-    {
+    {   
+        Storage::delete($post->img);
         $post->delete();
         return redirect()->route('admin.posts.index');
        

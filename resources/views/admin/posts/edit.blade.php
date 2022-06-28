@@ -13,7 +13,7 @@
         </div>
     @endif
     </div>
-    <form action="{{route('admin.posts.update', $post->slug)}}" method="post">
+    <form action="{{route('admin.posts.update', $post->slug)}}" method="post" enctype="multipart/form-data">
         @csrf 
         @method ('PUT')
        
@@ -34,7 +34,7 @@
     </div>
     <div class="form-group">
         <label for="thumb">Image</label>
-        <input type="text" name="img" id="img"  class="@error('img') is-invalid @enderror form-control"  value ="{{$post->img}}" >
+        <input type="file" name="img" id="img"  class="@error('img') is-invalid @enderror form-control"  value ="{{asset('storage/' . $post->img)}}" >
         @error('img')
         <div class="alert alert-danger">{{ $message }}</div>
         @enderror

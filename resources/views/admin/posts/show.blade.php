@@ -13,7 +13,10 @@
         @if (count($post->tags) > 0)
             <strong>Tag:</strong>
             @foreach ($post->tags as $tag)
-            <span>#{{$tag->name}},</span>
+            <span>#{{$tag->name}}
+                @if(!$loop->last)
+                ,
+                @endif</span>
             @endforeach
         @else
         <span>Nessun tag</span>
